@@ -28,18 +28,15 @@ public class WordFrequencyGame {
             return CALCULATE_ERROR;
         }
     }
-
-
+    
     private List<InputWord> getCountedWordsInOrder(Map<String, List<InputWord>> wordCountMap) {
-        List<InputWord> inputWordList;
         List<InputWord> countedList = new ArrayList<>();
         wordCountMap.entrySet().stream()
                 .forEach(entry ->
                         countedList.add(new InputWord(entry.getKey(), entry.getValue().size()))
                 );
-        inputWordList = countedList;
-        inputWordList.sort(Comparator.comparingInt(InputWord::getWordCount).reversed());
-        return inputWordList;
+        countedList.sort(Comparator.comparingInt(InputWord::getWordCount).reversed());
+        return countedList;
     }
 
     private Map<String, List<InputWord>> getListMap(List<InputWord> inputWordList) {
