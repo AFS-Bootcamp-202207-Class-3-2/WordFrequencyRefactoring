@@ -15,10 +15,9 @@ public class WordFrequencyGame {
         try {
             //split the input string with 1 to n pieces of spaces
             String[] words = inputStr.split(SPLIT_REGEX);
-            List<InputWord> inputWordList = new ArrayList<>();
-            for (String word : words) {
-                inputWordList.add(new InputWord(word, DEFAULT_COUNT));
-            }
+            List<InputWord> inputWordList = Arrays.stream(words)
+                    .map(word -> new InputWord(word, DEFAULT_COUNT))
+                    .collect(Collectors.toList());
             //get the map for the next step of sizing the same word
             Map<String, List<InputWord>> wordCountMap = getListMap(inputWordList);
             inputWordList = getCountedWordsInOrder(wordCountMap);
@@ -39,22 +38,19 @@ public class WordFrequencyGame {
                         countedList.add(new InputWord(entry.getKey(), entry.getValue().size()))
                 );
         inputWordList = countedList;
-        return inputWordList.stream()
-                .sorted(Comparator.comparing(InputWord::getWordCount).reversed())
-                .collect(Collectors.toList());
+        inputWordList.sort(Comparator.comparingInt(InputWord::getWordCount).reversed());
+        return inputWordList;
     }
 
     private Map<String, List<InputWord>> getListMap(List<InputWord> inputWordList) {
-        Map<String, List<InputWord>> wordCountMap = new HashMap<>();
-        inputWordList.stream().forEach(word ->{
-            if (!wordCountMap.containsKey(word.getWord())) {
-                wordCountMap.put(word.getWord(), new ArrayList<InputWord>(){{
-                    add(word);
-                }});
-            } else {
-                wordCountMap.get(word.getWord()).add(word);
-            }
-        });
-        return wordCountMap;
+        return inputWordList.stream()
+                .collect(Collectors.toMap(
+                        InputWord::getWord,
+                        word -> new ArrayList<InputWord>(){{add(word);}},
+                        (oldList, newList) -> {
+                            oldList.addAll(newList);
+                            return oldList;
+                        }
+                ));
     }
 }
