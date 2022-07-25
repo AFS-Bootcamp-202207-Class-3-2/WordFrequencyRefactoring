@@ -11,25 +11,25 @@ public class WordFrequencyGame {
         }
         try {
             //split the input string with 1 to n pieces of spaces
-            String[] arr = inputStr.split(SPLIT_REGEX);
+            String[] wordList = inputStr.split(SPLIT_REGEX);
             List<Input> inputList = new ArrayList<>();
-            for (String s : arr) {
-                Input input = new Input(s, 1);
+            for (String word : wordList) {
+                Input input = new Input(word, 1);
                 inputList.add(input);
             }
             //get the map for the next step of sizing the same word
-            Map<String, List<Input>> map = getListMap(inputList);
-            List<Input> list = new ArrayList<>();
-            for (Map.Entry<String, List<Input>> entry : map.entrySet()) {
+            Map<String, List<Input>> inputCountMap = getListMap(inputList);
+            List<Input> countedList = new ArrayList<>();
+            for (Map.Entry<String, List<Input>> entry : inputCountMap.entrySet()) {
                 Input input = new Input(entry.getKey(), entry.getValue().size());
-                list.add(input);
+                countedList.add(input);
             }
-            inputList = list;
+            inputList = countedList;
             inputList.sort((w1, w2) -> w2.getWordCount() - w1.getWordCount());
             StringJoiner joiner = new StringJoiner(LINE_BREAK);
-            for (Input w : inputList) {
-                String s = w.getValue() + " " + w.getWordCount();
-                joiner.add(s);
+            for (Input word : inputList) {
+                String wordOutPut = word.getValue() + " " + word.getWordCount();
+                joiner.add(wordOutPut);
             }
             return joiner.toString();
         } catch (Exception e) {
@@ -38,17 +38,17 @@ public class WordFrequencyGame {
     }
 
     private Map<String, List<Input>> getListMap(List<Input> inputList) {
-        Map<String, List<Input>> map = new HashMap<>();
+        Map<String, List<Input>> inputCountMap = new HashMap<>();
         for (Input input : inputList) {
 //       map.computeIfAbsent(input.getValue(), k -> new ArrayList<>()).add(input);
-            if (!map.containsKey(input.getValue())) {
-                ArrayList arr = new ArrayList<>();
-                arr.add(input);
-                map.put(input.getValue(), arr);
+            if (!inputCountMap.containsKey(input.getValue())) {
+                ArrayList inputCountList = new ArrayList<>();
+                inputCountList.add(input);
+                inputCountMap.put(input.getValue(), inputCountList);
             } else {
-                map.get(input.getValue()).add(input);
+                inputCountMap.get(input.getValue()).add(input);
             }
         }
-        return map;
+        return inputCountMap;
     }
 }
