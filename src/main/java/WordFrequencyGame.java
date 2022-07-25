@@ -21,19 +21,27 @@ public class WordFrequencyGame {
             }
             //get the map for the next step of sizing the same word
             Map<String, List<InputWord>> wordCountMap = getListMap(inputWordList);
-            List<InputWord> countedList = new ArrayList<>();
-            wordCountMap.entrySet().stream()
-                    .forEach(entry ->
-                            countedList.add(new InputWord(entry.getKey(), entry.getValue().size()))
-                    );
-            inputWordList = countedList;
-            inputWordList.sort((w1, w2) -> w2.getWordCount() - w1.getWordCount());
+            inputWordList = getCountedWordsInOrder(wordCountMap);
             return inputWordList.stream()
                     .map(word -> word.getWord() + " " + word.getWordCount())
                     .collect(Collectors.joining(LINE_BREAK));
         } catch (Exception e) {
             return CALCULATE_ERROR;
         }
+    }
+
+
+    private List<InputWord> getCountedWordsInOrder(Map<String, List<InputWord>> wordCountMap) {
+        List<InputWord> inputWordList;
+        List<InputWord> countedList = new ArrayList<>();
+        wordCountMap.entrySet().stream()
+                .forEach(entry ->
+                        countedList.add(new InputWord(entry.getKey(), entry.getValue().size()))
+                );
+        inputWordList = countedList;
+        return inputWordList.stream()
+                .sorted(Comparator.comparing(InputWord::getWordCount).reversed())
+                .collect(Collectors.toList());
     }
 
     private Map<String, List<InputWord>> getListMap(List<InputWord> inputWordList) {
