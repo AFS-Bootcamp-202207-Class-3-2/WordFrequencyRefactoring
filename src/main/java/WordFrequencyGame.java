@@ -4,6 +4,7 @@ public class WordFrequencyGame {
 
     public static final String SPLIT_REGEX = "\\s+";
     public static final String LINE_BREAK = "\n";
+    public static final String CALCULATE_ERROR = "Calculate Error";
 
     public String getResult(String inputStr) {
         if (inputStr.split(SPLIT_REGEX).length == 1) {
@@ -33,7 +34,7 @@ public class WordFrequencyGame {
             }
             return joiner.toString();
         } catch (Exception e) {
-            return "Calculate Error";
+            return CALCULATE_ERROR;
         }
     }
 
