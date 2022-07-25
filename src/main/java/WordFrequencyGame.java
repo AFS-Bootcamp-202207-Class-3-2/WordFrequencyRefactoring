@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WordFrequencyGame {
 
@@ -16,40 +17,36 @@ public class WordFrequencyGame {
             String[] words = inputStr.split(SPLIT_REGEX);
             List<InputWord> inputWordList = new ArrayList<>();
             for (String word : words) {
-                InputWord inputWord = new InputWord(word, 1);
-                inputWordList.add(inputWord);
+                inputWordList.add(new InputWord(word, DEFAULT_COUNT));
             }
             //get the map for the next step of sizing the same word
-            Map<String, List<InputWord>> inputCountMap = getListMap(inputWordList);
+            Map<String, List<InputWord>> wordCountMap = getListMap(inputWordList);
             List<InputWord> countedList = new ArrayList<>();
-            for (Map.Entry<String, List<InputWord>> entry : inputCountMap.entrySet()) {
-                InputWord inputWord = new InputWord(entry.getKey(), entry.getValue().size());
-                countedList.add(inputWord);
-            }
+            wordCountMap.entrySet().stream()
+                    .forEach(entry ->
+                            countedList.add(new InputWord(entry.getKey(), entry.getValue().size()))
+                    );
             inputWordList = countedList;
             inputWordList.sort((w1, w2) -> w2.getWordCount() - w1.getWordCount());
-            StringJoiner joiner = new StringJoiner(LINE_BREAK);
-            for (InputWord word : inputWordList) {
-                String wordOutPut = word.getWord() + " " + word.getWordCount();
-                joiner.add(wordOutPut);
-            }
-            return joiner.toString();
+            return inputWordList.stream()
+                    .map(word -> word.getWord() + " " + word.getWordCount())
+                    .collect(Collectors.joining(LINE_BREAK));
         } catch (Exception e) {
             return CALCULATE_ERROR;
         }
     }
 
     private Map<String, List<InputWord>> getListMap(List<InputWord> inputWordList) {
-        Map<String, List<InputWord>> inputCountMap = new HashMap<>();
-        for (InputWord inputWord : inputWordList) {
-            if (!inputCountMap.containsKey(inputWord.getWord())) {
-                ArrayList inputCountList = new ArrayList<>();
-                inputCountList.add(inputWord);
-                inputCountMap.put(inputWord.getWord(), inputCountList);
+        Map<String, List<InputWord>> wordCountMap = new HashMap<>();
+        inputWordList.stream().forEach(word ->{
+            if (!wordCountMap.containsKey(word.getWord())) {
+                wordCountMap.put(word.getWord(), new ArrayList<InputWord>(){{
+                    add(word);
+                }});
             } else {
-                inputCountMap.get(inputWord.getWord()).add(inputWord);
+                wordCountMap.get(word.getWord()).add(word);
             }
-        }
-        return inputCountMap;
+        });
+        return wordCountMap;
     }
 }
