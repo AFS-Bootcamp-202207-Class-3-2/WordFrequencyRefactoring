@@ -1,13 +1,17 @@
 import java.util.*;
 
 public class WordFrequencyGame {
+
+    public static final String SPLIT_REGEX = "\\s+";
+    public static final String LINE_BREAK = "\n";
+
     public String getResult(String inputStr) {
-        if (inputStr.split("\\s+").length == 1) {
+        if (inputStr.split(SPLIT_REGEX).length == 1) {
             return inputStr + " 1";
         } else {
             try {
                 //split the input string with 1 to n pieces of spaces
-                String[] arr = inputStr.split("\\s+");
+                String[] arr = inputStr.split(SPLIT_REGEX);
                 List<Input> inputList = new ArrayList<>();
                 for (String s : arr) {
                     Input input = new Input(s, 1);
@@ -22,7 +26,7 @@ public class WordFrequencyGame {
                 }
                 inputList = list;
                 inputList.sort((w1, w2) -> w2.getWordCount() - w1.getWordCount());
-                StringJoiner joiner = new StringJoiner("\n");
+                StringJoiner joiner = new StringJoiner(LINE_BREAK);
                 for (Input w : inputList) {
                     String s = w.getValue() + " " + w.getWordCount();
                     joiner.add(s);
